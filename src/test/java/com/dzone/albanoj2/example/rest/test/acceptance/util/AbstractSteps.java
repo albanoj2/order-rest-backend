@@ -20,13 +20,52 @@ public abstract class AbstractSteps {
 	private MockMvc mvc;
 	
 	private int lastGetStatus;
+	private int lastPostStatus;
+	private int lastPutStatus;
+	private int lastDeleteStatus;
 
 	protected void get(String url) throws Exception {
-		mvc.perform(MockMvcRequestBuilders.get(url).accept(MediaType.APPLICATION_JSON))
+		mvc.perform(MockMvcRequestBuilders.get(url)
+				.accept(MediaType.APPLICATION_JSON)
+			)
 			.andDo(result -> lastGetStatus = result.getResponse().getStatus());
+	}
+	
+	protected void post(String url, String body) throws Exception {
+		mvc.perform(MockMvcRequestBuilders.get(url)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(body))
+			.andDo(result -> lastPostStatus = result.getResponse().getStatus());
+	}
+	
+	protected void put(String url, String body) throws Exception {
+		mvc.perform(MockMvcRequestBuilders.put(url)
+				.accept(MediaType.APPLICATION_JSON)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(body))
+			.andDo(result -> lastPutStatus = result.getResponse().getStatus());
+	}
+	
+	protected void delete(String url) throws Exception {
+		mvc.perform(MockMvcRequestBuilders.delete(url)
+				.accept(MediaType.APPLICATION_JSON))
+			.andDo(result -> lastDeleteStatus = result.getResponse().getStatus());
 	}
 	
 	protected int getLastGetStatus() {
 		return lastGetStatus;
+	}
+	
+	protected int getLastPostStatus() {
+		return lastPostStatus;
+	}
+
+	public int getLastPutStatus() {
+		return lastPutStatus;
+	}
+
+	public int getLastDeleteStatus() {
+		return lastDeleteStatus;
 	}
 }
