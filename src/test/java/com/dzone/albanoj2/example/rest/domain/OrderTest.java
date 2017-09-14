@@ -16,34 +16,34 @@ public class OrderTest {
 	@Test
 	public void testOrderWithNoLineItemsEnsureCostIsZero() {
 		assertNoLineItems();
-		assertTotalCostInCentsIs(0);
+		assertTotalCostInCentsIs(0L);
 	}
 	
 	private void assertNoLineItems() {
 		Assert.assertTrue(order.getLineItems().isEmpty());
 	}
 
-	private void assertTotalCostInCentsIs(long expectedCost) {
+	private void assertTotalCostInCentsIs(Long expectedCost) {
 		Assert.assertEquals(expectedCost, order.getTotalCostInCents());
 	}
 	
 	@Test
 	public void testOrderWithOneLineItemEnsureCostIsCostOfLineItem() {
-		LineItem lineItem = injectLineItemWithCostInCents(100);
+		LineItem lineItem = injectLineItemWithCostInCents(100L);
 		assertTotalCostInCentsIs(lineItem.getCostInCents());
 	}
 	
-	private LineItem injectLineItemWithCostInCents(long cost) {
+	private LineItem injectLineItemWithCostInCents(Long cost) {
 		LineItem lineItem = new LineItem();
-		lineItem.setCostInCents(100);
+		lineItem.setCostInCents(cost);
 		order.addLineItem(lineItem);
 		return lineItem;
 	}
 	
 	@Test
 	public void testOrderWithTwoLineItemsEnsureCostIsCostOfBothLineItem() {
-		LineItem lineItem1 = injectLineItemWithCostInCents(100);
-		LineItem lineItem2 = injectLineItemWithCostInCents(150);
+		LineItem lineItem1 = injectLineItemWithCostInCents(100L);
+		LineItem lineItem2 = injectLineItemWithCostInCents(150L);
 		assertTotalCostInCentsIs(lineItem1.getCostInCents() + lineItem2.getCostInCents());
 	}
 }

@@ -1,17 +1,20 @@
 package com.dzone.albanoj2.example.rest.domain;
 
-public class LineItem {
+import org.springframework.hateoas.Identifiable;
 
-	private long id;
+public class LineItem implements Identifiable<Long> {
+
+	private Long id;
 	private String name;
 	private String description;
-	private long costInCents;
+	private Long costInCents;
 	
-	public long getId() {
+	@Override
+	public Long getId() {
 		return id;
 	}
 	
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	
@@ -31,11 +34,11 @@ public class LineItem {
 		this.description = description;
 	}
 
-	public long getCostInCents() {
+	public Long getCostInCents() {
 		return costInCents;
 	}
 
-	public void setCostInCents(long costInCents) {
+	public void setCostInCents(Long costInCents) {
 		this.costInCents = costInCents;
 	}
 }
