@@ -1,4 +1,4 @@
-package com.dzone.albanoj2.example.rest.controller;
+package com.dzone.albanoj2.example.rest.test.integration.controller;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

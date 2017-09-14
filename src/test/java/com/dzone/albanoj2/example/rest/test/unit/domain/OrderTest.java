@@ -1,8 +1,11 @@
-package com.dzone.albanoj2.example.rest.domain;
+package com.dzone.albanoj2.example.rest.test.unit.domain;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.dzone.albanoj2.example.rest.domain.LineItem;
+import com.dzone.albanoj2.example.rest.domain.Order;
 
 public class OrderTest {
 	
