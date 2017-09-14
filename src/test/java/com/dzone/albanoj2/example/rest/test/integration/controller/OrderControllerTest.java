@@ -2,6 +2,7 @@ package com.dzone.albanoj2.example.rest.test.integration.controller;
 
 import static com.dzone.albanoj2.example.rest.test.integration.controller.util.OrderControllerTestUtils.*;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
@@ -137,22 +138,50 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     }
     
     @Test
-    public void testPostNewOrderEnsureOrderCreated() throws Exception {
+    public void testCreateNewOrderEnsureOrderCreated() throws Exception {
     	assertNoOrders();
-    	postOrder(TEST_ORDER);
+    	Order desiredOrder = generateTestOrder();
+    	createOrder(toJsonString(desiredOrder));
     	assertOrderCountIs(1);
+    	assertOrdersMatch(desiredOrder, getCreatedOrder());
     }
     
-    private ResultActions postOrder(String payload) throws Exception {
+    private static Order generateTestOrder() {
+    	Order order = new Order();
+    	order.setDescription("test description");
+    	order.setLineItems(generateLineItemList());
+    	return order;
+    }
+    
+    @SuppressWarnings("serial")
+	private static List<LineItem> generateLineItemList() {
+    	return new ArrayList<LineItem>() {{
+    		add(new LineItem("test name 1", "test description 1", 100L));
+    		add(new LineItem("test name 2", "test description 2", 200L));
+    	}};
+    }
+    
+    private ResultActions createOrder(String payload) throws Exception {
     	return post("/order", payload);
     }
     
-    @Test
-    public void testPostNewOrderEnsureCorrectResponse() throws Exception {
-    	assertNoOrders();
-    	postOrder(TEST_ORDER)
-    		.andExpect(status().isCreated())
-    		.andExpect(orderIsCorrect(getCreatedOrder()));
+    private static void assertOrdersMatch(Order expected, Order actual) {
+    	Assert.assertEquals(expected.getDescription(), actual.getDescription());
+    	assertLineItemListsMatch(expected.getLineItems(), actual.getLineItems());
+    }
+    
+    private static void assertLineItemListsMatch(List<LineItem> expected, List<LineItem> actual) {
+    	Assert.assertEquals(expected.size(), actual.size());
+    	
+    	for (int i = 0; i < expected.size(); i++) {
+    		assertLineItemsMatch(expected.get(i), actual.get(i));
+    	}
+    }
+    
+    private static void assertLineItemsMatch(LineItem expected, LineItem actual) {
+    	Assert.assertEquals(expected.getName(), actual.getName());
+    	Assert.assertEquals(expected.getDescription(), actual.getDescription());
+    	Assert.assertEquals(expected.getCostInCents(), actual.getCostInCents());
     }
 
 	private Order getCreatedOrder() {
@@ -161,25 +190,33 @@ public class OrderControllerTest extends ControllerIntegrationTest {
 	}
     
     @Test
-    public void testPostNewOrderEnsureCorrectLinks() throws Exception {
+    public void testCreateNewOrderEnsureCorrectResponse() throws Exception {
     	assertNoOrders();
-    	postOrder(TEST_ORDER)
-    		.andExpect(status().isCreated())
-    		.andExpect(orderLinksAreCorrect(getCreatedOrder(), entityLinks));
-    }
-    
-    @Test
-    public void testPostNewOrderMissingDataEnsureCorrectResponse() throws Exception {
-    	assertNoOrders();
-    	postOrder(TEST_ORDER_MISSING_ORDER_DATA)
+    	createOrder(TEST_ORDER)
     		.andExpect(status().isCreated())
     		.andExpect(orderIsCorrect(getCreatedOrder()));
     }
     
     @Test
-    public void testPostInvalidNewOrderEnsureCorrectResponse() throws Exception {
+    public void testCreateNewOrderEnsureCorrectLinks() throws Exception {
     	assertNoOrders();
-    	postOrder(INVALID_TEST_ORDER)
+    	createOrder(TEST_ORDER)
+    		.andExpect(status().isCreated())
+    		.andExpect(orderLinksAreCorrect(getCreatedOrder(), entityLinks));
+    }
+    
+    @Test
+    public void testCreateNewOrderMissingDataEnsureCorrectResponse() throws Exception {
+    	assertNoOrders();
+    	createOrder(TEST_ORDER_MISSING_ORDER_DATA)
+    		.andExpect(status().isCreated())
+    		.andExpect(orderIsCorrect(getCreatedOrder()));
+    }
+    
+    @Test
+    public void testCreateInvalidNewOrderEnsureCorrectResponse() throws Exception {
+    	assertNoOrders();
+    	createOrder(INVALID_TEST_ORDER)
     		.andExpect(status().isBadRequest());
     }
     
@@ -235,33 +272,6 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     	updated.setDescription(original.getDescription() + " updated");
     	updated.setLineItems(generateLineItemList());
     	return updated;
-    }
-    
-    @SuppressWarnings("serial")
-	private static List<LineItem> generateLineItemList() {
-    	return new ArrayList<LineItem>() {{
-    		add(new LineItem("test name 1", "test description 1", 100L));
-    		add(new LineItem("test name 2", "test description 2", 200L));
-    	}};
-    }
-    
-    private static void assertOrdersMatch(Order expected, Order actual) {
-    	Assert.assertEquals(expected.getDescription(), actual.getDescription());
-    	assertLineItemListsMatch(expected.getLineItems(), actual.getLineItems());
-    }
-    
-    private static void assertLineItemListsMatch(List<LineItem> expected, List<LineItem> actual) {
-    	Assert.assertEquals(expected.size(), actual.size());
-    	
-    	for (int i = 0; i < expected.size(); i++) {
-    		assertLineItemsMatch(expected.get(i), actual.get(i));
-    	}
-    }
-    
-    private static void assertLineItemsMatch(LineItem expected, LineItem actual) {
-    	Assert.assertEquals(expected.getName(), actual.getName());
-    	Assert.assertEquals(expected.getDescription(), actual.getDescription());
-    	Assert.assertEquals(expected.getCostInCents(), actual.getCostInCents());
     }
     
     @Test

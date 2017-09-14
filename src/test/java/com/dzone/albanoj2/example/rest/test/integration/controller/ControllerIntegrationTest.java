@@ -37,11 +37,11 @@ public class ControllerIntegrationTest {
 		return mvc.perform(MockMvcRequestBuilders.put(url, urlVariables)
 			.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_JSON)
-			.content(asJsonString(content))
+			.content(toJsonString(content))
 		);
 	}
 	
-	private static String asJsonString(final Object obj) throws JsonProcessingException {
+	protected static String toJsonString(final Object obj) throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(obj);
 	}
