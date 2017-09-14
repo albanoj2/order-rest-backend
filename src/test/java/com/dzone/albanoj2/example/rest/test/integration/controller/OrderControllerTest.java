@@ -4,6 +4,7 @@ import static com.dzone.albanoj2.example.rest.test.integration.controller.util.O
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Assert;
@@ -16,6 +17,7 @@ import org.springframework.hateoas.EntityLinks;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
 
+import com.dzone.albanoj2.example.rest.domain.LineItem;
 import com.dzone.albanoj2.example.rest.domain.Order;
 import com.dzone.albanoj2.example.rest.repository.OrderRepository;
 
@@ -179,5 +181,96 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     	assertNoOrders();
     	postOrder(INVALID_TEST_ORDER)
     		.andExpect(status().isBadRequest());
+    }
+    
+    @Test
+    public void testDeleteNonexistentOrderEnsureCorrectResponse() throws Exception {
+    	assertNoOrders();
+    	deleteOrder(1)
+    		.andExpect(status().isNotFound());
+    }
+    
+    private ResultActions deleteOrder(long id) throws Exception {
+    	return delete("/order/{id}", id);
+    }
+
+    @Test
+    public void testDeleteExistingOrderEnsureCorrectResponse() throws Exception {
+    	Order injectedOrder = injectOrder();
+    	assertOrderCountIs(1);
+    	deleteOrder(injectedOrder.getId())
+    		.andExpect(status().isNoContent());
+    }
+    
+    @Test
+    public void testDeleteExistingOrderEnsureOrderDeleted() throws Exception {
+    	Order injectedOrder = injectOrder();
+    	assertOrderCountIs(1);
+    	deleteOrder(injectedOrder.getId());
+    	assertNoOrders();
+    }
+    
+    @Test
+    public void testUpdateNonexistentOrderEnsureCorrectResponse() throws Exception {
+    	assertNoOrders();
+    	updateOrder(1, new Order())
+    		.andExpect(status().isNotFound());
+    }
+    
+    private ResultActions updateOrder(long id, Order updatedOrder) throws Exception {
+    	return put("/order/{id}", updatedOrder, String.valueOf(id));
+    }
+    
+    @Test
+    public void testUpdateExistingOrderEnsureOrderUpdated() throws Exception {
+    	Order originalOrder = injectOrder();
+    	assertOrderCountIs(1);
+    	Order updatedOrder = generateUpdatedOrder(originalOrder);
+    	updateOrder(originalOrder.getId(), updatedOrder);
+    	assertOrdersMatch(updatedOrder, originalOrder);
+    }
+    
+    private static Order generateUpdatedOrder(Order original) {
+    	Order updated = new Order();
+    	updated.setDescription(original.getDescription() + " updated");
+    	updated.setLineItems(generateLineItemList());
+    	return updated;
+    }
+    
+    @SuppressWarnings("serial")
+	private static List<LineItem> generateLineItemList() {
+    	return new ArrayList<LineItem>() {{
+    		add(new LineItem("test name 1", "test description 1", 100L));
+    		add(new LineItem("test name 2", "test description 2", 200L));
+    	}};
+    }
+    
+    private static void assertOrdersMatch(Order expected, Order actual) {
+    	Assert.assertEquals(expected.getDescription(), actual.getDescription());
+    	assertLineItemListsMatch(expected.getLineItems(), actual.getLineItems());
+    }
+    
+    private static void assertLineItemListsMatch(List<LineItem> expected, List<LineItem> actual) {
+    	Assert.assertEquals(expected.size(), actual.size());
+    	
+    	for (int i = 0; i < expected.size(); i++) {
+    		assertLineItemsMatch(expected.get(i), actual.get(i));
+    	}
+    }
+    
+    private static void assertLineItemsMatch(LineItem expected, LineItem actual) {
+    	Assert.assertEquals(expected.getName(), actual.getName());
+    	Assert.assertEquals(expected.getDescription(), actual.getDescription());
+    	Assert.assertEquals(expected.getCostInCents(), actual.getCostInCents());
+    }
+    
+    @Test
+    public void testUpdateExistingOrderEnsureCorrectResponse() throws Exception {
+    	Order originalOrder = injectOrder();
+    	assertOrderCountIs(1);
+    	Order updatedOrder = generateUpdatedOrder(originalOrder);
+    	updateOrder(originalOrder.getId(), updatedOrder)
+    		.andExpect(status().isOk())
+    		.andExpect(updatedOrderIsCorrect(originalOrder.getId(), updatedOrder));
     }
 }

@@ -25,6 +25,13 @@ public class OrderControllerTestUtils {
 			.addMatcher(jsonPath("$.totalCostInCents").value(expected.getTotalCostInCents()));
 	}
 	
+	public static ResultMatcher updatedOrderIsCorrect(Long originalId, Order expected) {
+		return new CompositeResultMatcher()
+			.addMatcher(jsonPath("$.id").value(originalId))
+			.addMatcher(jsonPath("$.description").value(expected.getDescription()))
+			.addMatcher(jsonPath("$.totalCostInCents").value(expected.getTotalCostInCents()));
+	}
+	
 	public static ResultMatcher orderLinksAtIndexAreCorrect(int index, Order expected, EntityLinks entityLinks) {
 		return new CompositeResultMatcher()
 			.addMatcher(selfLinkAtIndexIs(index, entityLinks.linkForSingleResource(expected).toString()))

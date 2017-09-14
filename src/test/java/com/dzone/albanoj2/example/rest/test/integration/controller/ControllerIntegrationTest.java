@@ -7,6 +7,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 @AutoConfigureMockMvc
 public class ControllerIntegrationTest {
@@ -24,5 +27,22 @@ public class ControllerIntegrationTest {
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(content)
 		);
+	}
+	
+	protected ResultActions delete(String url, Object... urlVariables) throws Exception {
+		return mvc.perform(MockMvcRequestBuilders.delete(url, urlVariables).accept(MediaType.APPLICATION_JSON));
+	}
+	
+	protected ResultActions put(String url, Object content, Object... urlVariables) throws Exception {
+		return mvc.perform(MockMvcRequestBuilders.put(url, urlVariables)
+			.accept(MediaType.APPLICATION_JSON)
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(asJsonString(content))
+		);
+	}
+	
+	private static String asJsonString(final Object obj) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(obj);
 	}
 }

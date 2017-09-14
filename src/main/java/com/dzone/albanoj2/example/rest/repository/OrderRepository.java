@@ -26,15 +26,20 @@ public class OrderRepository {
 		return NEXT_ID++;
 	}
 	
-	public void delete(Order element) {
-		elements.remove(element);
+	public boolean delete(Long id) {
+		return elements.removeIf(element -> element.getId().equals(id));
 	}
 	
-	public void update(Long id, Order element) {
-		findById(id).ifPresent(e -> {
-			e.setDescription(element.getDescription());
-			e.setLineItems(element.getLineItems());
+	public boolean update(Long id, Order updatedElement) {
+		
+		Optional<Order> element = findById(id);
+		
+		element.ifPresent(e -> {
+			e.setDescription(updatedElement.getDescription());
+			e.setLineItems(updatedElement.getLineItems());
 		});
+		
+		return element.isPresent();
 	}
 	
 	public List<Order> findAll() {

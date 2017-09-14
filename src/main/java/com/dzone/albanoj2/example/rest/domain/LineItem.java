@@ -9,6 +9,14 @@ public class LineItem implements Identifiable<Long> {
 	private String description;
 	private Long costInCents;
 	
+	public LineItem() {}
+	
+	public LineItem(String name, String description, Long costInCents) {
+		this.name = name;
+		this.description = description;
+		this.costInCents = costInCents;
+	}
+	
 	@Override
 	public Long getId() {
 		return id;
