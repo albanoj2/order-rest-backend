@@ -4,7 +4,6 @@ import static com.dzone.albanoj2.example.rest.test.integration.controller.util.O
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -17,7 +16,6 @@ import org.springframework.hateoas.EntityLinks;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.ResultActions;
 
-import com.dzone.albanoj2.example.rest.domain.LineItem;
 import com.dzone.albanoj2.example.rest.domain.Order;
 import com.dzone.albanoj2.example.rest.repository.OrderRepository;
 
@@ -26,7 +24,7 @@ import com.dzone.albanoj2.example.rest.repository.OrderRepository;
 public class OrderControllerTest extends ControllerIntegrationTest {
 	
 	private static final String INVALID_TEST_ORDER = "";
-	private static final String TEST_ORDER = "{\"description\": \"Some test description\", \"lineItems\": []}";
+	private static final String TEST_ORDER = "{\"description\": \"Some test description\", \"costInCents\": 200}";
 	private static final String TEST_ORDER_MISSING_ORDER_DATA = "{\"foo\": \"bar\"}";
 	
 	@Autowired
@@ -148,16 +146,7 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     private static Order generateTestOrder() {
     	Order order = new Order();
     	order.setDescription("test description");
-    	order.setLineItems(generateLineItemList());
     	return order;
-    }
-    
-    @SuppressWarnings("serial")
-	private static List<LineItem> generateLineItemList() {
-    	return new ArrayList<LineItem>() {{
-    		add(new LineItem("test name 1", "test description 1", 100L));
-    		add(new LineItem("test name 2", "test description 2", 200L));
-    	}};
     }
     
     private ResultActions createOrder(String payload) throws Exception {
@@ -166,21 +155,6 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     
     private static void assertOrdersMatch(Order expected, Order actual) {
     	Assert.assertEquals(expected.getDescription(), actual.getDescription());
-    	assertLineItemListsMatch(expected.getLineItems(), actual.getLineItems());
-    }
-    
-    private static void assertLineItemListsMatch(List<LineItem> expected, List<LineItem> actual) {
-    	Assert.assertEquals(expected.size(), actual.size());
-    	
-    	for (int i = 0; i < expected.size(); i++) {
-    		assertLineItemsMatch(expected.get(i), actual.get(i));
-    	}
-    }
-    
-    private static void assertLineItemsMatch(LineItem expected, LineItem actual) {
-    	Assert.assertEquals(expected.getName(), actual.getName());
-    	Assert.assertEquals(expected.getDescription(), actual.getDescription());
-    	Assert.assertEquals(expected.getCostInCents(), actual.getCostInCents());
     }
 
 	private Order getCreatedOrder() {
@@ -269,7 +243,6 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     private static Order generateUpdatedOrder(Order original) {
     	Order updated = new Order();
     	updated.setDescription(original.getDescription() + " updated");
-    	updated.setLineItems(generateLineItemList());
     	return updated;
     }
     

@@ -9,12 +9,12 @@ public class OrderResource extends ResourceSupport {
 
 	private final long id;
 	private final String description;
-	private final long totalCostInCents;
+	private final long costInCents;
 	
 	public OrderResource(Order order) {
 		id = order.getId();
 		description = order.getDescription();
-		totalCostInCents = order.getTotalCostInCents();
+		costInCents = order.getCostInCents();
 	}
 
 	@JsonProperty("id")
@@ -26,7 +26,7 @@ public class OrderResource extends ResourceSupport {
 		return description;
 	}
 
-	public Long getTotalCostInCents() {
-		return totalCostInCents;
+	public long getCostInCents() {
+		return costInCents;
 	}
 }
