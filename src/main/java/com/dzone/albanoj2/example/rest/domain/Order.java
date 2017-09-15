@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.hateoas.Identifiable;
-
-public class Order implements Identifiable<Long> {
+public class Order implements Identifiable {
 
 	private Long id;
 	private String description;
@@ -17,6 +15,7 @@ public class Order implements Identifiable<Long> {
 		return id;
 	}
 	
+	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}

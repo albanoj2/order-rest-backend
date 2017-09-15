@@ -13,6 +13,8 @@ import cucumber.api.java.en.When;
 
 public class OrderSteps extends AbstractSteps {
 	
+	private Long lastCreatedId;
+	
 	@Autowired
 	private OrderRepository orders;
 
@@ -21,8 +23,8 @@ public class OrderSteps extends AbstractSteps {
 		givenNumberOfOrdersArePresent(0);
 	}
 	
-	@When("^the client calls /order$")
-	public void theClientCallsGetOrders() throws Throwable {
+	@When("^the order calls /order$")
+	public void theUserCallsGetOrders() throws Throwable {
 		get("/order");
 	}
 	
@@ -31,12 +33,12 @@ public class OrderSteps extends AbstractSteps {
 		Assert.assertEquals(count, orders.getCount());
 	}
 	 
-	@Then("^the client receives status code of (\\d+)$")
-	public void theClientReceivesStatusCodeOf(int statusCode) throws Throwable {
+	@Then("^the order receives status code of (\\d+)$")
+	public void theUserReceivesStatusCodeOf(int statusCode) throws Throwable {
         Assert.assertEquals(statusCode, getLastGetResponse().getStatus());
 	}
 	
-	@And("^the list of clients is empty$")
+	@And("^the list of order is empty$")
 	public void testListOfOrdersIsEmpty() throws Throwable {
 		Assert.assertEquals("[]", getLastGetResponse().getContentAsString());
 	}

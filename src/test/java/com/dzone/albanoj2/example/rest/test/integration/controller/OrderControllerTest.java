@@ -2,14 +2,13 @@ package com.dzone.albanoj2.example.rest.test.integration.controller;
 
 import static com.dzone.albanoj2.example.rest.test.integration.controller.util.OrderControllerTestUtils.*;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,8 +35,8 @@ public class OrderControllerTest extends ControllerIntegrationTest {
 	@Autowired
 	private EntityLinks entityLinks;
 	
-	@Before
-	public void setUp() {
+	@After
+	public void tearDown() {
 		repository.clear();
 	}
 

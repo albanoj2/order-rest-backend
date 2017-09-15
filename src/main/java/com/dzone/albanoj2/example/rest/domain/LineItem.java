@@ -1,8 +1,6 @@
 package com.dzone.albanoj2.example.rest.domain;
 
-import org.springframework.hateoas.Identifiable;
-
-public class LineItem implements Identifiable<Long> {
+public class LineItem implements Identifiable {
 
 	private Long id;
 	private String name;
@@ -22,6 +20,7 @@ public class LineItem implements Identifiable<Long> {
 		return id;
 	}
 	
+	@Override
 	public void setId(Long id) {
 		this.id = id;
 	}
