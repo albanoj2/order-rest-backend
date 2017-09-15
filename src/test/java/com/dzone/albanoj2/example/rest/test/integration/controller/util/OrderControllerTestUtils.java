@@ -14,21 +14,27 @@ public class OrderControllerTestUtils {
 		return new CompositeResultMatcher()
 			.addMatcher(jsonPath("$.[" + index + "].id").value(expected.getId()))
 			.addMatcher(jsonPath("$.[" + index + "].description").value(expected.getDescription()))
-			.addMatcher(jsonPath("$.[" + index + "].costInCents").value(expected.getCostInCents()));
+			.addMatcher(jsonPath("$.[" + index + "].costInCents").value(expected.getCostInCents()))
+			.addMatcher(jsonPath("$.[" + index + "].shipped").value(expected.isShipped()))
+			.addMatcher(jsonPath("$.[" + index + "].delivered").value(expected.isDelivered()))
+			.addMatcher(jsonPath("$.[" + index + "].completed").value(expected.isCompleted()));
 	}
 	
 	public static ResultMatcher orderIsCorrect(Order expected) {
-		return new CompositeResultMatcher()
-			.addMatcher(jsonPath("$.id").value(expected.getId()))
+		return orderIsCorrect(expected.getId(), expected);
+	}
+	
+	private static ResultMatcher orderIsCorrect(Long expectedId, Order expected) {
+		return new CompositeResultMatcher().addMatcher(jsonPath("$.id").value(expectedId))
 			.addMatcher(jsonPath("$.description").value(expected.getDescription()))
-			.addMatcher(jsonPath("$.costInCents").value(expected.getCostInCents()));
+			.addMatcher(jsonPath("$.costInCents").value(expected.getCostInCents()))
+			.addMatcher(jsonPath("$.shipped").value(expected.isShipped()))
+			.addMatcher(jsonPath("$.delivered").value(expected.isDelivered()))
+			.addMatcher(jsonPath("$.completed").value(expected.isCompleted()));
 	}
 	
 	public static ResultMatcher updatedOrderIsCorrect(Long originalId, Order expected) {
-		return new CompositeResultMatcher()
-			.addMatcher(jsonPath("$.id").value(originalId))
-			.addMatcher(jsonPath("$.description").value(expected.getDescription()))
-			.addMatcher(jsonPath("$.costInCents").value(expected.getCostInCents()));
+		return orderIsCorrect(originalId, expected);
 	}
 	
 	public static ResultMatcher orderLinksAtIndexAreCorrect(int index, Order expected, EntityLinks entityLinks) {

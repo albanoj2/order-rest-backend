@@ -8,6 +8,7 @@ import com.dzone.albanoj2.example.rest.test.acceptance.util.AbstractSteps;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import cucumber.api.java.en.And;
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 
@@ -16,9 +17,27 @@ public class OrderSteps extends AbstractSteps {
 	private static final String TEST_ORDER = "{\"description\": \"some test order\", \"lineItems\": [{\"name\": \"test item 1\", \"description\": \"some test item 1\", \"costInCents\": 100}, {\"name\": \"test item 2\", \"description\": \"some test item 2\", \"costInCents\": 200}]}";
 	private static final TypeReference<Map<String, Object>> RESOURCE_TYPE = new TypeReference<Map<String, Object>>() {};
 	
+	@Given("^an order exists$")
+	public void anOrderExists() throws Throwable {
+		createOrder();
+	}
+	
+	private void createOrder() throws Exception {
+		post("/order", TEST_ORDER);
+	}
+	
 	@When("^the user creates an order$")
 	public void theUserCallsGetOrders() throws Throwable {
-		post("/order", TEST_ORDER);
+		createOrder();
+	}
+	
+	@When("^the user deletes the created order$")
+	public void theUserDeletesTheCreatedOrder() throws Throwable {
+		delete("/order/{id}", getCreatedId());
+	}
+	
+	private Object getCreatedId() throws Exception {
+		return getLastPostContentAs(RESOURCE_TYPE).get("id");
 	}
 	
 	@And("^the order is successfully created$")
@@ -26,14 +45,14 @@ public class OrderSteps extends AbstractSteps {
 		 Assert.assertEquals(201, getLastPostResponse().getStatus());
 	}
 	
-	@And("^the user retrieves the created order$")
+	@And("^the user gets the created order$")
 	public void theUserRetrievesTheOrder() throws Throwable {
-		get("/order/{id}", getLastPostContentAs(RESOURCE_TYPE).get("id"));
+		get("/order/{id}", getCreatedId());
 	}
 	
 	@Then("^the user receives status code of (\\d+)$")
 	public void theUserReceivesStatusCodeOf(int statusCode) throws Throwable {
-        Assert.assertEquals(statusCode, getLastGetResponse().getStatus());
+        Assert.assertEquals(statusCode, getLastStatusCode());
 	}
 	
 	@And("^the retrieved order is correct$")

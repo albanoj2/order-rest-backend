@@ -31,12 +31,16 @@ public abstract class AbstractSteps {
 	private MockHttpServletResponse lastPostResponse;
 	private MockHttpServletResponse lastPutResponse;
 	private MockHttpServletResponse lastDeleteResponse;
+	private int lastStatusCode;
 
 	protected void get(String url, Object... urlVariable) throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get(url, urlVariable)
 				.accept(MediaType.APPLICATION_JSON)
 			)
-			.andDo(result -> lastGetResponse = result.getResponse());
+			.andDo(result -> {
+				lastGetResponse = result.getResponse();
+				lastStatusCode = lastGetResponse.getStatus();
+			});
 	}
 	
 	protected void post(String url, String body, Object... urlVariables) throws Exception {
@@ -44,7 +48,10 @@ public abstract class AbstractSteps {
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(body))
-			.andDo(result -> lastPostResponse = result.getResponse());
+			.andDo(result -> {
+				lastPostResponse = result.getResponse();
+				lastStatusCode = lastPostResponse.getStatus();
+			});
 	}
 	
 	protected void put(String url, String body) throws Exception {
@@ -52,13 +59,19 @@ public abstract class AbstractSteps {
 				.accept(MediaType.APPLICATION_JSON)
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(body))
-			.andDo(result -> lastPutResponse = result.getResponse());
+			.andDo(result -> {
+				lastPutResponse = result.getResponse();
+				lastStatusCode = lastPutResponse.getStatus();
+			});
 	}
 	
-	protected void delete(String url) throws Exception {
-		mvc.perform(MockMvcRequestBuilders.delete(url)
+	protected void delete(String url, Object... urlVariables) throws Exception {
+		mvc.perform(MockMvcRequestBuilders.delete(url, urlVariables)
 				.accept(MediaType.APPLICATION_JSON))
-			.andDo(result -> lastDeleteResponse = result.getResponse());
+			.andDo(result -> {
+				lastDeleteResponse = result.getResponse();
+				lastStatusCode = lastDeleteResponse.getStatus();
+			});
 	}
 
 	protected MockHttpServletResponse getLastGetResponse() {
@@ -95,5 +108,9 @@ public abstract class AbstractSteps {
 	
 	protected static <T> T deserialize(String json, TypeReference<T> type) throws JsonParseException, JsonMappingException, IOException {
 		return mapper.readValue(json, type);
+	}
+
+	public int getLastStatusCode() {
+		return lastStatusCode;
 	}
 }

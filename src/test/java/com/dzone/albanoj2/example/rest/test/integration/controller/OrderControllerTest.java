@@ -155,6 +155,10 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     
     private static void assertOrdersMatch(Order expected, Order actual) {
     	Assert.assertEquals(expected.getDescription(), actual.getDescription());
+    	Assert.assertEquals(expected.getCostInCents(), actual.getCostInCents());
+    	Assert.assertEquals(expected.isShipped(), actual.isShipped());
+    	Assert.assertEquals(expected.isDelivered(), actual.isDelivered());
+    	Assert.assertEquals(expected.isCompleted(), actual.isCompleted());
     }
 
 	private Order getCreatedOrder() {
@@ -243,6 +247,9 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     private static Order generateUpdatedOrder(Order original) {
     	Order updated = new Order();
     	updated.setDescription(original.getDescription() + " updated");
+    	updated.setCostInCents(original.getCostInCents() + 100);
+    	updated.markAsShipped();
+    	updated.markAsDelivered();
     	return updated;
     }
     
