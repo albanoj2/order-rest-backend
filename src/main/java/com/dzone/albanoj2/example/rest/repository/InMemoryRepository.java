@@ -4,22 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.dzone.albanoj2.example.rest.domain.Identifiable;
 
 
 public abstract class InMemoryRepository<T extends Identifiable> {
 
-	private static long NEXT_ID = 1;
+	@Autowired
+	private IdGenerator idGenerator;
+	
 	private List<T> elements = new ArrayList<>();
 
 	public T create(T element) {
 		elements.add(element);
-		element.setId(getNextId());
+		element.setId(idGenerator.getNextId());
 		return element;
-	}
-
-	private static long getNextId() {
-		return NEXT_ID++;
 	}
 
 	public boolean delete(Long id) {
@@ -43,11 +43,8 @@ public abstract class InMemoryRepository<T extends Identifiable> {
 	}
 
 	public boolean update(Long id, T updated) {
-		
 		Optional<T> element = findById(id);
-		
 		element.ifPresent(original -> updateIfExists(original, updated));
-		
 		return element.isPresent();
 	}
 	
