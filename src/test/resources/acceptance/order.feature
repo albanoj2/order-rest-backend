@@ -15,5 +15,8 @@ Feature: User can successfully get, create, delete, and update orders
   
   Scenario: User deletes a created order
    Given an order exists
-    When the user deletes the created order
-    Then the user receives status code of 204
+     And the user deletes the created order
+     And the user receives status code of 204
+    When the user gets the created order
+    Then the user receives status code of 404 
+    
