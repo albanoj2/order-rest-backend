@@ -1,9 +1,5 @@
 package com.dzone.albanoj2.example.rest.domain;
 
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
-//@JsonDeserialize(using = OrderDeserializer.class)
-@JsonPropertyOrder({"isShipped", "isDelivered"})
 public class Order implements Identifiable {
 
 	private Long id;

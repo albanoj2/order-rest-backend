@@ -43,9 +43,15 @@ public abstract class InMemoryRepository<T extends Identifiable> {
 	}
 
 	public boolean update(Long id, T updated) {
-		Optional<T> element = findById(id);
-		element.ifPresent(original -> updateIfExists(original, updated));
-		return element.isPresent();
+		
+		if (updated == null) {
+			return false;
+		}
+		else {
+			Optional<T> element = findById(id);
+			element.ifPresent(original -> updateIfExists(original, updated));
+			return element.isPresent();
+		}
 	}
 	
 	protected abstract void updateIfExists(T original, T desired);

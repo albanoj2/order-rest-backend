@@ -1,12 +1,12 @@
 package com.dzone.albanoj2.example.rest.test.integration.controller;
 
 import static com.dzone.albanoj2.example.rest.test.integration.controller.util.OrderControllerTestUtils.*;
+import static com.dzone.albanoj2.example.rest.test.util.OrderTestUtils.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +22,6 @@ import com.dzone.albanoj2.example.rest.repository.OrderRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-//@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class OrderControllerTest extends ControllerIntegrationTest {
 	
 	private static final String INVALID_TEST_ORDER = "";
@@ -37,11 +36,6 @@ public class OrderControllerTest extends ControllerIntegrationTest {
 	
 	@Before
 	public void setUp() {
-		repository.clear();
-	}
-	
-	@After
-	public void tearDown() {
 		repository.clear();
 	}
 
@@ -147,23 +141,11 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     	Order desiredOrder = generateTestOrder();
     	createOrder(toJsonString(desiredOrder));
     	assertOrderCountIs(1);
-    	assertOrdersMatch(desiredOrder, getCreatedOrder());
-    }
-    
-    private static Order generateTestOrder() {
-    	Order order = new Order();
-    	order.setDescription("test description");
-    	return order;
+    	assertAllButIdsMatchBetweenOrders(desiredOrder, getCreatedOrder());
     }
     
     private ResultActions createOrder(String payload) throws Exception {
     	return post("/order", payload);
-    }
-    
-    private static void assertOrdersMatch(Order expected, Order actual) {
-    	Assert.assertEquals(expected.getDescription(), actual.getDescription());
-    	Assert.assertEquals(expected.getCostInCents(), actual.getCostInCents());
-    	Assert.assertEquals(expected.isComplete(), actual.isComplete());
     }
 
 	private Order getCreatedOrder() {
@@ -246,15 +228,7 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     	assertOrderCountIs(1);
     	Order updatedOrder = generateUpdatedOrder(originalOrder);
     	updateOrder(originalOrder.getId(), updatedOrder);
-    	assertOrdersMatch(updatedOrder, originalOrder);
-    }
-    
-    private static Order generateUpdatedOrder(Order original) {
-    	Order updated = new Order();
-    	updated.setDescription(original.getDescription() + " updated");
-    	updated.setCostInCents(original.getCostInCents() + 100);
-    	updated.markComplete();
-    	return updated;
+    	assertAllButIdsMatchBetweenOrders(updatedOrder, originalOrder);
     }
     
     @Test
