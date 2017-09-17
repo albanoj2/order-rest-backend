@@ -10,17 +10,13 @@ public class OrderResource extends ResourceSupport {
 	private final long id;
 	private final String description;
 	private final long costInCents;
-	private final boolean isShipped;
-	private final boolean isDelivered;
-	private final boolean isCompleted;
+	private final boolean isComplete;
 	
 	public OrderResource(Order order) {
 		id = order.getId();
 		description = order.getDescription();
 		costInCents = order.getCostInCents();
-		isShipped = order.isShipped();
-		isDelivered = order.isDelivered();
-		isCompleted = order.isCompleted();
+		isComplete = order.isComplete();
 	}
 
 	@JsonProperty("id")
@@ -36,15 +32,7 @@ public class OrderResource extends ResourceSupport {
 		return costInCents;
 	}
 
-	public boolean isShipped() {
-		return isShipped;
-	}
-
-	public boolean isDelivered() {
-		return isDelivered;
-	}
-
-	public boolean isCompleted() {
-		return isCompleted;
+	public boolean isComplete() {
+		return isComplete;
 	}
 }

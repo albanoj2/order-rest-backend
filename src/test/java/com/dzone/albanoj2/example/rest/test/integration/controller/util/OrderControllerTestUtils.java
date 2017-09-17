@@ -15,9 +15,7 @@ public class OrderControllerTestUtils {
 			.addMatcher(jsonPath("$.[" + index + "].id").value(expected.getId()))
 			.addMatcher(jsonPath("$.[" + index + "].description").value(expected.getDescription()))
 			.addMatcher(jsonPath("$.[" + index + "].costInCents").value(expected.getCostInCents()))
-			.addMatcher(jsonPath("$.[" + index + "].shipped").value(expected.isShipped()))
-			.addMatcher(jsonPath("$.[" + index + "].delivered").value(expected.isDelivered()))
-			.addMatcher(jsonPath("$.[" + index + "].completed").value(expected.isCompleted()));
+			.addMatcher(jsonPath("$.[" + index + "].complete").value(expected.isComplete()));
 	}
 	
 	public static ResultMatcher orderIsCorrect(Order expected) {
@@ -28,9 +26,7 @@ public class OrderControllerTestUtils {
 		return new CompositeResultMatcher().addMatcher(jsonPath("$.id").value(expectedId))
 			.addMatcher(jsonPath("$.description").value(expected.getDescription()))
 			.addMatcher(jsonPath("$.costInCents").value(expected.getCostInCents()))
-			.addMatcher(jsonPath("$.shipped").value(expected.isShipped()))
-			.addMatcher(jsonPath("$.delivered").value(expected.isDelivered()))
-			.addMatcher(jsonPath("$.completed").value(expected.isCompleted()));
+			.addMatcher(jsonPath("$.complete").value(expected.isComplete()));
 	}
 	
 	public static ResultMatcher updatedOrderIsCorrect(Long originalId, Order expected) {
@@ -38,12 +34,20 @@ public class OrderControllerTestUtils {
 	}
 	
 	public static ResultMatcher orderLinksAtIndexAreCorrect(int index, Order expected, EntityLinks entityLinks) {
+		final String selfReference = entityLinks.linkForSingleResource(expected).toString();
+		
 		return new CompositeResultMatcher()
-			.addMatcher(selfLinkAtIndexIs(index, entityLinks.linkForSingleResource(expected).toString()));
+			.addMatcher(selfLinkAtIndexIs(index, selfReference))
+			.addMatcher(updateLinkAtIndexIs(index, selfReference))
+			.addMatcher(deleteLinkAtIndexIs(index, selfReference));
 	}
 	
 	public static ResultMatcher orderLinksAreCorrect(Order expected, EntityLinks entityLinks) {
+		final String selfReference = entityLinks.linkForSingleResource(expected).toString();
+		
 		return new CompositeResultMatcher()
-			.addMatcher(selfLinkIs(entityLinks.linkForSingleResource(expected).toString()));
+			.addMatcher(selfLinkIs(selfReference))
+			.addMatcher(updateLinkIs(selfReference))
+			.addMatcher(deleteLinkIs(selfReference));
 	}
 }

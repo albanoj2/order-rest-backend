@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.dzone.albanoj2.example.rest.repository.OrderRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+//@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class OrderControllerTest extends ControllerIntegrationTest {
 	
 	private static final String INVALID_TEST_ORDER = "";
@@ -32,6 +34,11 @@ public class OrderControllerTest extends ControllerIntegrationTest {
 	
 	@Autowired
 	private EntityLinks entityLinks;
+	
+	@Before
+	public void setUp() {
+		repository.clear();
+	}
 	
 	@After
 	public void tearDown() {
@@ -156,9 +163,7 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     private static void assertOrdersMatch(Order expected, Order actual) {
     	Assert.assertEquals(expected.getDescription(), actual.getDescription());
     	Assert.assertEquals(expected.getCostInCents(), actual.getCostInCents());
-    	Assert.assertEquals(expected.isShipped(), actual.isShipped());
-    	Assert.assertEquals(expected.isDelivered(), actual.isDelivered());
-    	Assert.assertEquals(expected.isCompleted(), actual.isCompleted());
+    	Assert.assertEquals(expected.isComplete(), actual.isComplete());
     }
 
 	private Order getCreatedOrder() {
@@ -248,8 +253,7 @@ public class OrderControllerTest extends ControllerIntegrationTest {
     	Order updated = new Order();
     	updated.setDescription(original.getDescription() + " updated");
     	updated.setCostInCents(original.getCostInCents() + 100);
-    	updated.markAsShipped();
-    	updated.markAsDelivered();
+    	updated.markComplete();
     	return updated;
     }
     

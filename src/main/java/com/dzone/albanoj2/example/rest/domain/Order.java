@@ -1,12 +1,15 @@
 package com.dzone.albanoj2.example.rest.domain;
 
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+//@JsonDeserialize(using = OrderDeserializer.class)
+@JsonPropertyOrder({"isShipped", "isDelivered"})
 public class Order implements Identifiable {
 
 	private Long id;
 	private String description;
 	private long costInCents;
-	private boolean isShipped;
-	private boolean isDelivered;
+	private boolean isComplete;
 	
 	@Override
 	public Long getId() {
@@ -33,49 +36,20 @@ public class Order implements Identifiable {
 	public long getCostInCents() {
 		return costInCents;
 	}
-
-	public boolean isShipped() {
-		return isShipped;
-	}
-
-	public void setShipped(boolean desiredShipmentState) {
-		validateDeliveryStatus(desiredShipmentState, isDelivered);
-		isShipped = desiredShipmentState;
+	
+	public void setComplete(boolean isComplete) {
+		this.isComplete = isComplete;
 	}
 	
-	private void validateDeliveryStatus(boolean isShipped, boolean isDelivered) {
-		
-		if (!isShipped && isDelivered) {
-			throw new IllegalOrderStateException("Cannot mark order " + id + " as unshipped but delivered");
-		}
-	}
-
-	public void markAsShipped() {
-		setShipped(true);
+	public void markComplete() {
+		setComplete(true);
 	}
 	
-	public void markAsUnshipped() {
-		setShipped(false);
-	}
-
-	public boolean isDelivered() {
-		return isDelivered;
-	}
-
-	public void setDelivered(boolean desiredDeliveryState) {
-		validateDeliveryStatus(isShipped, desiredDeliveryState);
-		isDelivered = desiredDeliveryState;
-	}
-
-	public void markAsDelivered() {
-		setDelivered(true);
-	}
-
-	public void markAsNotDelivered() {
-		setDelivered(false);
+	public void markIncomplete() {
+		setComplete(false);
 	}
 	
-	public boolean isCompleted() {
-		return isShipped && isDelivered;
+	public boolean isComplete() {
+		return isComplete;
 	}
 }
