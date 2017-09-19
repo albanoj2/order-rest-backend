@@ -18,3 +18,14 @@ To start this web service, install [Maven](https://maven.apache.org/install.html
 Once the web service is started, it can be reached at
 
     http://localhost:8080/order
+
+## REST Endpoints
+The following REST endpoints are available upon deployment of the order management system:
+
+| HTTP Verb        | URL           | Description  | Status Codes |
+| ------------- |-------------|:-----| ----|
+| `GET` | `http://localhost:8080/order` | Obtains a list of all existing orders | <ul><li>`200 OK`</li></ul> |
+| `GET` | `http://localhost:8080/order/{id}` | Obtains the order corresponding to the supplied order ID | <ul><li>`200 OK` if order exists</li><li>`404 Not Found` if order does not exist</li></ul> |
+| `POST` | `http://localhost:8080/order` | Creates a new order based on the payload contained in the request body | <ul><li>`201 Created` if order successfully created</li></ul> |
+| `PUT` | `http://localhost:8080/order/{id}` | Updated an existing order with the data contained in the request body | <ul><li>`200 OK` if order succesfully updated</li><li>`404 Not Found` if order does not exist</li></ul> |
+| `DELETE` | `http://localhost:8080/order/{id}` | Deletes an existing order that corresponds to the supplied order ID | <ul><li>`203 No Content` if order succesfully deleted</li><li>`404 Not Found` if order does not exist</li></ul> |
