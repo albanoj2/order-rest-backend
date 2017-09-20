@@ -1,4 +1,4 @@
-package com.dzone.albanoj2.example.rest.test.unit;
+package com.dzone.albanoj2.example.rest.test.unit.repository;
 
 import static com.dzone.albanoj2.example.rest.test.util.OrderTestUtils.*;
 
@@ -22,14 +22,14 @@ import com.dzone.albanoj2.example.rest.repository.OrderRepository;
 public class OrderRepositoryTest {
 	
 	private static final long NONEXISTENT_ID = 1000;
+
+	@Autowired
+	private OrderRepository repository;
 	
 	@Before
 	public void setUp() {
 		repository.clear();
 	}
-
-	@Autowired
-	private OrderRepository repository;
 	
 	@Test
 	public void testFindNonexistentOrderEnsureOptionalIsNotPresent() throws Exception {

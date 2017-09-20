@@ -36,7 +36,7 @@ public class OrderController {
 		return new ResponseEntity<>(assembler.toResourceCollection(orders), HttpStatus.OK);
 	}
 	
-	@RequestMapping(method = RequestMethod.POST)
+	@RequestMapping(method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<OrderResource> createOrder(@RequestBody Order order) {
 		Order createdOrder = repository.create(order);
 		return new ResponseEntity<>(assembler.toResource(createdOrder), HttpStatus.CREATED);
@@ -61,7 +61,7 @@ public class OrderController {
 		return new ResponseEntity<>(responseStatus);
 	}
 	
-	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT, consumes = "application/json")
 	public ResponseEntity<OrderResource> updateOrder(@PathVariable Long id, @RequestBody Order updatedOrder) {
 		boolean wasUpdated = repository.update(id, updatedOrder);
 		
